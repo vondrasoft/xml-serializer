@@ -1,0 +1,33 @@
+{
+  "name": "vondrasoft/xml-serializer",
+  "description": "Transform arrays to xml and back.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dominik Vondra",
+      "email": "domik.vondra@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "XmlSerializer\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "XmlSerializer\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=8.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.2.0",
+    "phpunit/phpunit": "^9.5",
+    "slevomat/coding-standard": "^7.0",
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "squizlabs/php_codesniffer": "*"
+  }
+}

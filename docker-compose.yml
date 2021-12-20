@@ -1,0 +1,16 @@
+version: "3.0"
+services:
+  php:
+    container_name: php-xml-serializer
+    image: keltuo/php:8-cli
+    depends_on:
+      - composer
+    volumes:
+      - ./:/var/www/
+
+  composer:
+    container_name: composer-xml-serializer
+    image: library/composer:latest
+    volumes:
+      - ./:/app
+    command: bash -c "composer install --optimize-autoloader --no-progress"
