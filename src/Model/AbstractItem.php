@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace XmlSerializer\Model;
 
-abstract class AbstractItem
+use XmlSerializer\Arrayable;
+
+abstract class AbstractItem implements Arrayable
 {
     protected string $name;
 

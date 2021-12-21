@@ -23,4 +23,12 @@ class Attribute extends AbstractItem
         $this->value = $value;
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'value' => $this->value,
+        ];
+    }
 }

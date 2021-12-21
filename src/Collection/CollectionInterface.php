@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace XmlSerializer\Collection;
 
+use XmlSerializer\Arrayable;
 use XmlSerializer\Model\AbstractItem;
 
-interface CollectionInterface
+interface CollectionInterface extends Arrayable
 {
     public function getItems(): array;
 

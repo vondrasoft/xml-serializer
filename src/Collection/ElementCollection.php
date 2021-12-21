@@ -7,7 +7,7 @@ use XmlSerializer\Model\Element;
 
 class ElementCollection extends AbstractCollection
 {
-    public function addAttribute(Element $element): self
+    public function addElement(Element $element): self
     {
         $this->items[] = $element;
         return $this;

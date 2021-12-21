@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace XmlSerializer;
 
-class Serializer
+interface Arrayable
 {
-
+    public function toArray(): array;
 }

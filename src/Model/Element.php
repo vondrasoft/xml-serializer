@@ -10,6 +10,7 @@ class Element extends AbstractItem
 {
     protected AttributeCollection $attributes;
     protected ElementCollection $elements;
+    protected ?string $value;
 
     public function __construct(string $name)
     {
@@ -36,5 +37,29 @@ class Element extends AbstractItem
     {
         $this->elements = $elements;
         return $this;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    public function setValue(string $value): Element
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        $data = ['name' => $this->name];
+        
+        if (isset($this->attributes) && $this->attributes->getItemsCount()) {
+            $data['attributes'] = $this->attributes->toArray();
+        }
+
+        $data['value'] = isset($this->elements) && $this->elements->getItemsCount() ? $this->elements->toArray() : $this->value;
+
+        return $data;
     }
 }

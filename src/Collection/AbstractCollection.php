@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace XmlSerializer\Collection;
 
+use XmlSerializer\Model\AbstractItem;
+
 abstract class AbstractCollection implements CollectionInterface
 {
     protected array $items = [];
@@ -15,5 +17,17 @@ abstract class AbstractCollection implements CollectionInterface
     public function getItemsCount(): int
     {
         return \count($this->items);
+    }
+    
+    public function toArray(): array
+    {
+        $data = [];
+
+        /** @var AbstractItem $item */
+        foreach ($this->items as $item) {
+            $data[] = $item->toArray();
+        }
+
+        return $data;
     }
 }
