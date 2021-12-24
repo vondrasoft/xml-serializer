@@ -10,7 +10,5 @@ interface CollectionInterface extends Arrayable
 {
     public function getItems(): array;
 
-    public function getItemsCount(): int;
-
     public function findItemByName(string $name): ?AbstractItem;
 }

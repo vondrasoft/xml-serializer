@@ -28,7 +28,7 @@ class ElementCollectionFactory
         $data = \json_decode($json, true);
 
         if ($data) {
-            return $this->createCollectionFromArray($data);
+            return $this->createCollectionFromArray((array) $data);
         }
 
         throw new \RuntimeException('Invalid json string.');
@@ -36,10 +36,10 @@ class ElementCollectionFactory
 
     public function createCollectionFromObject(\stdClass $object): ElementCollection
     {
-        $data = \json_decode(\json_encode($object), true);
+        $data = \json_decode((string) \json_encode($object), true);
 
         if ($data) {
-            return $this->createCollectionFromArray($data);
+            return $this->createCollectionFromArray((array) $data);
         }
 
         throw new \RuntimeException('Invalid object data.');
@@ -64,7 +64,7 @@ class ElementCollectionFactory
         $element = new Element($name);
         $element->setAttributes($attributeCollection);
 
-        if (\is_array($data['value'])) {
+        if (isset($data['value']) && \is_array($data['value'])) {
             $elementCollection = new ElementCollection();
 
             foreach ($data['value'] as $subElement) {
@@ -73,7 +73,7 @@ class ElementCollectionFactory
 
             $element->setElements($elementCollection);
         } else {
-            $element->setValue($data['value'] ?? '');
+            $element->setValue($data['value'] ?? null);
         }
 
         return $element;

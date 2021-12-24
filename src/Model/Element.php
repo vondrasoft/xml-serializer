@@ -10,11 +10,12 @@ class Element extends AbstractItem
 {
     protected AttributeCollection $attributes;
     protected ElementCollection $elements;
-    protected ?string $value;
+    protected ?string $value = null;
 
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->elements = new ElementCollection();
     }
 
     public function getAttributes(): AttributeCollection
@@ -44,7 +45,7 @@ class Element extends AbstractItem
         return $this->value;
     }
 
-    public function setValue(string $value): Element
+    public function setValue(?string $value): Element
     {
         $this->value = $value;
         return $this;
@@ -54,11 +55,11 @@ class Element extends AbstractItem
     {
         $data = ['name' => $this->name];
         
-        if (isset($this->attributes) && $this->attributes->getItemsCount()) {
+        if (isset($this->attributes) && \count($this->attributes)) {
             $data['attributes'] = $this->attributes->toArray();
         }
 
-        $data['value'] = isset($this->elements) && $this->elements->getItemsCount() ? $this->elements->toArray() : $this->value;
+        $data['value'] = isset($this->elements) && \count($this->elements) ? $this->elements->toArray() : $this->value;
 
         return $data;
     }

@@ -21,4 +21,9 @@ class XmlSerializerManager
     {
         return $this->serializer->serialize($this->collectionFactory->createCollectionFromArray($data));
     }
+
+    public function getArrayFromXml(string $xml): array
+    {
+        return $this->serializer->deserialize($xml)->toArray();
+    }
 }

@@ -3,6 +3,7 @@
     <config name="installed_paths" value="./vendor/slevomat/coding-standard"/>
     <arg name="extensions" value="php"/>
     <file>src/</file>
+    <file>tests/</file>
     <arg name="basepath" value="."/>
     <arg name="colors"/>
     <arg name="parallel" value="75"/>

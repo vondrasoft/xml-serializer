@@ -5,18 +5,13 @@ namespace XmlSerializer\Collection;
 
 use XmlSerializer\Model\AbstractItem;
 
-abstract class AbstractCollection implements CollectionInterface
+abstract class AbstractCollection implements CollectionInterface, \Countable
 {
     protected array $items = [];
 
     public function getItems(): array
     {
         return $this->items;
-    }
-
-    public function getItemsCount(): int
-    {
-        return \count($this->items);
     }
     
     public function toArray(): array
@@ -29,5 +24,10 @@ abstract class AbstractCollection implements CollectionInterface
         }
 
         return $data;
+    }
+
+    public function count(): int
+    {
+        return \count($this->items);
     }
 }

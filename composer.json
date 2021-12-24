@@ -21,7 +21,10 @@
   },
   "minimum-stability": "stable",
   "require": {
-    "php": ">=8.0"
+    "php": ">=8.0",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "ext-dom": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.2.0",

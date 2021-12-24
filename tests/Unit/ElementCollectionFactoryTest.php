@@ -16,7 +16,7 @@ class ElementCollectionFactoryTest extends TestCase
         parent::setUp();
     }
 
-    public function testCreateCollectionFromArray()
+    public function testCreateCollectionFromArray(): void
     {
         $inputData = [
             [
@@ -47,7 +47,7 @@ class ElementCollectionFactoryTest extends TestCase
         ];
 
         $collection = $this->factory->createCollectionFromArray($inputData);
-        $this->assertSame(1, $collection->getItemsCount());
+        $this->assertSame(1, \count($collection));
         $this->assertSame($inputData, $collection->toArray());
     }
 }
