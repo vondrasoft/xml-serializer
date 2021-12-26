@@ -48,7 +48,7 @@ class XmlSerializer implements XmlSerializerInterface
 
         return $output;
     }
-
+    
     public function deserialize(string $xml): ElementCollection
     {
         $xml = \simplexml_load_string('<root>' . $xml . '</root>');
@@ -56,10 +56,7 @@ class XmlSerializer implements XmlSerializerInterface
 
         return $this->factory->createCollectionFromArray($data);
     }
-
-    /**
-     * @throws \ReflectionException
-     */
+    
     protected function normalizeXml(\SimpleXMLElement $node): array
     {
         $elements = [];

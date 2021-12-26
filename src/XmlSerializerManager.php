@@ -4,17 +4,23 @@ declare(strict_types=1);
 namespace XmlSerializer;
 
 use XmlSerializer\Factory\ElementCollectionFactory;
-use XmlSerializer\Serializer\XmlSerializer;
+use XmlSerializer\Inspector\CollectionInspectorInterface;
+use XmlSerializer\Serializer\XmlSerializerInterface;
 
 class XmlSerializerManager
 {
-    protected XmlSerializer $serializer;
+    protected XmlSerializerInterface $serializer;
     protected ElementCollectionFactory $collectionFactory;
+    protected CollectionInspectorInterface $collectionInspector;
 
-    public function __construct(XmlSerializer $serializer, ElementCollectionFactory $collectionFactory)
-    {
+    public function __construct(
+        XmlSerializerInterface $serializer,
+        ElementCollectionFactory $collectionFactory,
+        CollectionInspectorInterface $collectionInspector,
+    ) {
         $this->serializer = $serializer;
         $this->collectionFactory = $collectionFactory;
+        $this->collectionInspector = $collectionInspector;
     }
 
     public function getXmlFromArray(array $data): string
@@ -25,5 +31,30 @@ class XmlSerializerManager
     public function getArrayFromXml(string $xml): array
     {
         return $this->serializer->deserialize($xml)->toArray();
+    }
+
+    public function getXmlFromJson(string $json): string
+    {
+        return $this->serializer->serialize($this->collectionFactory->createCollectionFromJson($json));
+    }
+
+    public function getJsonFromXml(string $xml): string
+    {
+        return \json_encode($this->serializer->deserialize($xml)) ?: '';
+    }
+
+    public function getSerializer(): XmlSerializerInterface
+    {
+        return $this->serializer;
+    }
+
+    public function getCollectionFactory(): ElementCollectionFactory
+    {
+        return $this->collectionFactory;
+    }
+
+    public function getCollectionInspector(): CollectionInspectorInterface
+    {
+        return $this->collectionInspector;
     }
 }

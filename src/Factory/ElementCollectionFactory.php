@@ -5,6 +5,7 @@ namespace XmlSerializer\Factory;
 
 use XmlSerializer\Collection\AttributeCollection;
 use XmlSerializer\Collection\ElementCollection;
+use XmlSerializer\Exception\MissingAttributeNameException;
 use XmlSerializer\Model\Attribute;
 use XmlSerializer\Model\Element;
 
@@ -31,20 +32,9 @@ class ElementCollectionFactory
             return $this->createCollectionFromArray((array) $data);
         }
 
-        throw new \RuntimeException('Invalid json string.');
+        throw new \JsonException('Invalid json string.');
     }
-
-    public function createCollectionFromObject(\stdClass $object): ElementCollection
-    {
-        $data = \json_decode((string) \json_encode($object), true);
-
-        if ($data) {
-            return $this->createCollectionFromArray((array) $data);
-        }
-
-        throw new \RuntimeException('Invalid object data.');
-    }
-
+    
     protected function createElement(string $name, array $data): Element
     {
         $attributeCollection = new AttributeCollection();
@@ -52,7 +42,7 @@ class ElementCollectionFactory
         if (isset($data['attributes']) && \is_array($data['attributes'])) {
             foreach ($data['attributes'] as $item => $attribute) {
                 if (empty($attribute['name'])) {
-                    throw new \RuntimeException(
+                    throw new MissingAttributeNameException(
                         \sprintf('Attribute name of id %d on element %s not exist, or not set.', $item, $name)
                     );
                 }

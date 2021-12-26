@@ -5,7 +5,7 @@ namespace XmlSerializer\Collection;
 
 use XmlSerializer\Model\AbstractItem;
 
-abstract class AbstractCollection implements CollectionInterface, \Countable
+abstract class AbstractCollection implements CollectionInterface, \Countable, \JsonSerializable
 {
     protected array $items = [];
 
@@ -24,6 +24,11 @@ abstract class AbstractCollection implements CollectionInterface, \Countable
         }
 
         return $data;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     public function count(): int

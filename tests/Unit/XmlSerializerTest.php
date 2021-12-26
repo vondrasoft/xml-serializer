@@ -12,13 +12,6 @@ class XmlSerializerTest extends TestCase
     protected ElementCollectionFactory $factory;
     protected XmlSerializer $serializer;
 
-    protected function setUp(): void
-    {
-        $this->factory = new ElementCollectionFactory();
-        $this->serializer = new XmlSerializer($this->factory);
-        parent::setUp();
-    }
-
     public function testSerialize(): void
     {
         $input = [
@@ -30,12 +23,12 @@ class XmlSerializerTest extends TestCase
                         'attributes' => [
                             [
                                 'name' => 'param1',
-                                'value' => 'value1'
+                                'value' => 'value1',
                             ],
                             [
                                 'name' => 'param2',
-                                'value' => 'value2'
-                            ]
+                                'value' => 'value2',
+                            ],
                         ],
                         'value' => [
                             [
@@ -43,18 +36,18 @@ class XmlSerializerTest extends TestCase
                                 'attributes' => [
                                     [
                                         'name' => 'param',
-                                        'value' => '10'
-                                    ]
+                                        'value' => '10',
+                                    ],
                                 ],
-                                'value' => 'serializer'
+                                'value' => 'serializer',
                             ],
                             [
-                                'name' => 'empty'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'name' => 'empty',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $expectedOutput = '<test><element param1="value1" param2="value2"><element1 param="10">serializer</element1><empty/></element></test>';
@@ -82,31 +75,39 @@ class XmlSerializerTest extends TestCase
                                 'attributes' => [
                                     [
                                         'name' => 'number',
-                                        'value' => '2'
+                                        'value' => '2',
                                     ],
                                     [
                                         'name' => 'onumber',
-                                        'value' => '3'
-                                    ]
+                                        'value' => '3',
+                                    ],
+                                ],
+                                'value' => 'TestHouse',
                             ],
-                            'value' => 'TestHouse'
-                        ],
                             [
                                 'name' => 'parameter',
                                 'attributes' => [
                                     [
                                         'name' => 'type',
-                                        'value' => 'int'
-                                    ]
+                                        'value' => 'int',
+                                    ],
                                 ],
-                                'value' => 'value'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'value' => 'value',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->assertSame($expectedOutput, $this->serializer->deserialize($input)->toArray());
+    }
+
+    protected function setUp(): void
+    {
+        $this->factory = new ElementCollectionFactory();
+        $this->serializer = new XmlSerializer($this->factory);
+
+        parent::setUp();
     }
 }
