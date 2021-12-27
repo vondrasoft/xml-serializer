@@ -10,6 +10,10 @@ use XmlSerializer\Model\Element;
 
 class XmlSerializer implements XmlSerializerInterface
 {
+    public const CDATA_OPEN_CODE = '<![CDATA[';
+    public const CDATA_CLOSE_CODE = ']]>';
+    public const CDATA_ID_CODE = 'cdata-sanitize';
+
     protected ElementCollectionFactory $factory;
 
     public function __construct(ElementCollectionFactory $factory)
@@ -37,7 +41,9 @@ class XmlSerializer implements XmlSerializerInterface
 
             if (\is_null($item->getValue()) && \count($item->getElements())) {
                 $elements = $this->serialize($item->getElements());
-                $output .= $item->hasCdataValue() ? '<![CDATA[' . $elements . ']]>' : $elements;
+                $output .= $item->hasCdataValue()
+                    ? (self::CDATA_OPEN_CODE . $elements . self::CDATA_CLOSE_CODE)
+                    : $elements;
             } else {
                 $output .= $item->getValue();
             }
@@ -61,13 +67,15 @@ class XmlSerializer implements XmlSerializerInterface
 
     protected function sanitizeCData(string $xml): string
     {
-        while ($cDataPosition = \strpos((string) $xml, '<![CDATA[')) {
-            $xml = \substr_replace((string) $xml, ' cdata-sanitize="true"', $cDataPosition - 1, 0);
-            $search = '/'.\preg_quote('<![CDATA[', '/').'/';
+        $xml = \preg_replace('/(\v|\s)+/', ' ', $xml);
+
+        while ($cDataPosition = \strpos((string) $xml, self::CDATA_OPEN_CODE)) {
+            $xml = \substr_replace((string) $xml, ' ' . self::CDATA_ID_CODE . '="true"', $cDataPosition - 1, 0);
+            $search = '/'.\preg_quote(self::CDATA_OPEN_CODE, '/').'/';
             $xml = \preg_replace($search, '', $xml, 1);
         }
 
-        return \str_replace(']]>', '', (string) $xml);
+        return \str_replace(self::CDATA_CLOSE_CODE, '', (string) $xml);
     }
     
     protected function normalizeXml(\SimpleXMLElement $node): array
@@ -81,7 +89,7 @@ class XmlSerializer implements XmlSerializerInterface
 
             if (\count($attributes)) {
                 foreach ($attributes['@attributes'] as $key => $value) {
-                    if ($key === 'cdata-sanitize') {
+                    if ($key === self::CDATA_ID_CODE) {
                         $elementData['cdata'] = true;
                     } else {
                         $elementData['attributes'][] = [
