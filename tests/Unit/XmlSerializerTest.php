@@ -19,6 +19,7 @@ class XmlSerializerTest extends TestCase
                 'name' => 'test',
                 'value' => [
                     [
+                        'cdata' => true,
                         'name' => 'element',
                         'attributes' => [
                             [
@@ -50,7 +51,7 @@ class XmlSerializerTest extends TestCase
             ],
         ];
 
-        $expectedOutput = '<test><element param1="value1" param2="value2"><element1 param="10">serializer</element1><empty/></element></test>';
+        $expectedOutput = '<test><element param1="value1" param2="value2"><![CDATA[<element1 param="10">serializer</element1><empty/>]]></element></test>';
 
         $collection = $this->factory->createCollectionFromArray($input);
         $serializedXml = $this->serializer->serialize($collection);

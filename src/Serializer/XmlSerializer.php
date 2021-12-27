@@ -36,7 +36,8 @@ class XmlSerializer implements XmlSerializerInterface
             $output .= $isEmpty ? '/>' : '>';
 
             if (\is_null($item->getValue()) && \count($item->getElements())) {
-                $output .= $this->serialize($item->getElements());
+                $elements = $this->serialize($item->getElements());
+                $output .= $item->hasCdataValue() ? '<![CDATA[' . $elements . ']]>' : $elements;
             } else {
                 $output .= $item->getValue();
             }
@@ -51,10 +52,22 @@ class XmlSerializer implements XmlSerializerInterface
     
     public function deserialize(string $xml): ElementCollection
     {
+        $xml = $this->sanitizeCData($xml);
         $xml = \simplexml_load_string('<root>' . $xml . '</root>');
         $data = $xml ? $this->normalizeXml($xml) : [];
 
         return $this->factory->createCollectionFromArray($data);
+    }
+
+    protected function sanitizeCData(string $xml): string
+    {
+        while ($cDataPosition = \strpos((string) $xml, '<![CDATA[')) {
+            $xml = \substr_replace((string) $xml, ' cdata-sanitize="true"', $cDataPosition - 1, 0);
+            $search = '/'.\preg_quote('<![CDATA[', '/').'/';
+            $xml = \preg_replace($search, '', $xml, 1);
+        }
+
+        return \str_replace(']]>', '', (string) $xml);
     }
     
     protected function normalizeXml(\SimpleXMLElement $node): array
@@ -68,10 +81,14 @@ class XmlSerializer implements XmlSerializerInterface
 
             if (\count($attributes)) {
                 foreach ($attributes['@attributes'] as $key => $value) {
-                    $elementData['attributes'][] = [
-                        'name' => $key,
-                        'value' => (string) $value,
-                    ];
+                    if ($key === 'cdata-sanitize') {
+                        $elementData['cdata'] = true;
+                    } else {
+                        $elementData['attributes'][] = [
+                            'name' => $key,
+                            'value' => (string)$value,
+                        ];
+                    }
                 }
             }
 

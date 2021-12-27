@@ -66,6 +66,10 @@ class ElementCollectionFactory
             $element->setValue($data['value'] ?? null);
         }
 
+        if (!empty($data['cdata'])) {
+            $element->setHasCdataValue(true);
+        }
+
         return $element;
     }
 }

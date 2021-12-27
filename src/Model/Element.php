@@ -11,6 +11,7 @@ class Element extends AbstractItem
     protected AttributeCollection $attributes;
     protected ElementCollection $elements;
     protected ?string $value = null;
+    protected bool $hasCdataValue = false;
 
     public function __construct(string $name)
     {
@@ -51,12 +52,27 @@ class Element extends AbstractItem
         return $this;
     }
 
+    public function setHasCdataValue(bool $hasCdataValue): Element
+    {
+        $this->hasCdataValue = $hasCdataValue;
+        return $this;
+    }
+
+    public function hasCdataValue(): bool
+    {
+        return $this->hasCdataValue;
+    }
+
     public function toArray(): array
     {
         $data = ['name' => $this->name];
         
         if (isset($this->attributes) && \count($this->attributes)) {
             $data['attributes'] = $this->attributes->toArray();
+        }
+
+        if ($this->hasCdataValue()) {
+            $data['cdata'] = $this->hasCdataValue;
         }
 
         $data['value'] = isset($this->elements) && \count($this->elements) ? $this->elements->toArray() : $this->value;
