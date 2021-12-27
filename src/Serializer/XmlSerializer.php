@@ -15,13 +15,52 @@ class XmlSerializer implements XmlSerializerInterface
     public const CDATA_ID_CODE = 'cdata-sanitize';
 
     protected ElementCollectionFactory $factory;
+    protected array $options = [];
 
-    public function __construct(ElementCollectionFactory $factory)
+    public function __construct(ElementCollectionFactory $factory, array $options = [])
     {
         $this->factory = $factory;
+        $this->setOptions($options);
+    }
+
+    public function setOptions(array $options): self
+    {
+        if (!empty($options)) {
+            foreach (['showXmlTag', 'version', 'encoding'] as $key) {
+                if (\array_key_exists($key, $options)) {
+                    $this->options[$key] = $options[$key];
+                }
+            }
+        }
+
+        return $this;
     }
 
     public function serialize(ElementCollection $collection): string
+    {
+        $xml = '';
+
+        if (isset($this->options['showXmlTag']) && !empty($this->options['showXmlTag'])) {
+            $xml .= \sprintf(
+                '<?xml version="%s" encoding="%s"?>',
+                $this->options['version'] ?? '1.0',
+                $this->options['encoding'] ?? 'UTF-8'
+            );
+        }
+
+        return $xml . $this->makeXml($collection);
+    }
+    
+    public function deserialize(string $xml): ElementCollection
+    {
+        $xml = $this->sanitizeXmlAndCData($xml);
+        $xml = \simplexml_load_string('<root>' . $xml . '</root>');
+        $data = $xml ? $this->normalizeXml($xml) : [];
+
+        return $this->factory->createCollectionFromArray($data);
+    }
+
+    protected function makeXml(ElementCollection $collection): string
     {
         $output = '';
 
@@ -40,7 +79,7 @@ class XmlSerializer implements XmlSerializerInterface
             $output .= $isEmpty ? '/>' : '>';
 
             if (\is_null($item->getValue()) && \count($item->getElements())) {
-                $elements = $this->serialize($item->getElements());
+                $elements = $this->makeXml($item->getElements());
                 $output .= $item->hasCdataValue()
                     ? (self::CDATA_OPEN_CODE . $elements . self::CDATA_CLOSE_CODE)
                     : $elements;
@@ -55,19 +94,11 @@ class XmlSerializer implements XmlSerializerInterface
 
         return $output;
     }
-    
-    public function deserialize(string $xml): ElementCollection
-    {
-        $xml = $this->sanitizeCData($xml);
-        $xml = \simplexml_load_string('<root>' . $xml . '</root>');
-        $data = $xml ? $this->normalizeXml($xml) : [];
 
-        return $this->factory->createCollectionFromArray($data);
-    }
-
-    protected function sanitizeCData(string $xml): string
+    protected function sanitizeXmlAndCData(string $xml): string
     {
         $xml = \preg_replace('/(\v|\s)+/', ' ', $xml);
+        $xml = \preg_replace('/<\?xml[^>]+\/?>/im', '', (string) $xml);
 
         while ($cDataPosition = \strpos((string) $xml, self::CDATA_OPEN_CODE)) {
             $xml = \substr_replace((string) $xml, ' ' . self::CDATA_ID_CODE . '="true"', $cDataPosition - 1, 0);

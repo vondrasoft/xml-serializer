@@ -101,6 +101,64 @@ class CollectionInspectorTest extends TestCase
         $collectionInspector->getElementByPath('element.element1.elementTom.serializerElement');
     }
 
+    public function testGetElementBySpecificId(): void
+    {
+        $inputData = [
+            [
+                'name' => 'element',
+                'value' => [
+                    [
+                        'name' => 'test',
+                        'value' => 'testOne',
+                    ],
+                    [
+                        'name' => 'test',
+                        'value' => 'testTwo',
+                    ],
+                    [
+                        'name' => 'test',
+                        'value' => 'testThree',
+                    ],
+                ],
+            ],
+        ];
+
+        $collectionInspector = new CollectionInspector($this->factory->createCollectionFromArray($inputData));
+        $element = $collectionInspector->getElementByPath('element.test');
+        $this->assertSame('testOne', $element->getValue());
+        $element = $collectionInspector->getElementByPath('element.test[0]');
+        $this->assertSame('testOne', $element->getValue());
+        $element = $collectionInspector->getElementByPath('element.test[1]');
+        $this->assertSame('testTwo', $element->getValue());
+        $element = $collectionInspector->getElementByPath('element.test[2]');
+        $this->assertSame('testThree', $element->getValue());
+        $this->assertNull($collectionInspector->getElementByPath('element.test[3]'));
+
+        $inputXml = '
+            <notepad>
+                <param>first</param>
+                <param>second</param>
+                <param>
+                    <note>one</note>
+                    <note>two</note>
+                </param>
+            </notepad>
+        ';
+
+        $collection = $this->serializer->deserialize($inputXml);
+        $collectionInspector->setCollection($collection);
+
+        $this->assertSame('first', $collectionInspector->getElementByPath('notepad.param[0]')->getValue());
+        $this->assertSame('second', $collectionInspector->getElementByPath('notepad.param[1]')->getValue());
+        $this->assertNull($collectionInspector->getElementByPath('notepad.param[4]'));
+
+        $element = $collectionInspector->getElementByPath('notepad.param[2].note[0]');
+        $this->assertSame('one', $element->getValue());
+        $element = $collectionInspector->getElementByPath('notepad.param[2].note[1]');
+        $this->assertSame('two', $element->getValue());
+        $this->assertNull($collectionInspector->getElementByPath('notepad.param[2].note[2]'));
+    }
+
     protected function setUp(): void
     {
         $this->factory = new ElementCollectionFactory();

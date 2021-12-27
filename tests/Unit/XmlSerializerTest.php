@@ -104,6 +104,25 @@ class XmlSerializerTest extends TestCase
         $this->assertSame($expectedOutput, $this->serializer->deserialize($input)->toArray());
     }
 
+    public function testInsertXmlTag(): void
+    {
+        $input = '<main><element>One</element></main>';
+        $collection = $this->serializer->deserialize($input);
+
+        $this->serializer->setOptions(['showXmlTag' => true]);
+        $expectedOutput = '<?xml version="1.0" encoding="UTF-8"?><main><element>One</element></main>';
+        $this->assertSame($expectedOutput, $this->serializer->serialize($collection));
+        
+        $this->serializer->setOptions([
+            'showXmlTag' => true,
+            'version' => '1.1',
+            'encoding' => 'ISO-8859-2',
+        ]);
+
+        $expectedOutput = '<?xml version="1.1" encoding="ISO-8859-2"?><main><element>One</element></main>';
+        $this->assertSame($expectedOutput, $this->serializer->serialize($collection));
+    }
+
     protected function setUp(): void
     {
         $this->factory = new ElementCollectionFactory();
