@@ -265,4 +265,48 @@ echo $inspector->getElementByPath('notepad.param[1]')->getValue();
 echo $inspector->getElementByPath('notepad.param[2].note[1]')->getValue();
 ```
 
+XmlSerializerManager
+----
+This is main class from the package, you can inject it to your services by dependency injection and simple use it.
+
+```php
+<?php
+
+use XmlSerializer\Inspector\CollectionInspector;
+use XmlSerializer\Serializer\XmlSerializer;
+use XmlSerializer\XmlSerializerManager;
+
+$inputXml = '
+    <notepad>
+        <param>first</param>
+        <param>second</param>
+        <param>
+            <note>one</note>
+            <note>two</note>
+        </param>
+    </notepad>
+';
+
+$manager = new XmlSerializerManager(new XmlSerializer(), new CollectionInspector());
+
+// you can call serializer methods by getSerializer ...
+$collection = $manager->getSerializer()->deserialize($inputXml);
+
+// but you can use it directly on the manager level
+$array = $manager->getArrayFromXml($inputXml);
+
+// will print the same array, like calling $collection->toArray();
+var_dump($array);
+
+// you can get json from xml and etc.. getXmlFromArray, getXmlFromJson, getArrayFromXml
+$json = $manager->getJsonFromXml($inputXml);
+
+//you can use inspector from manager by call
+$inspector = $manager->getCollectionInspector();
+
+// you must set the collection if you are using dependency injection without inject collection to constructor
+$inspector->setCollection($collection);
+
+$element = $inspector->getElementByPath('....');
+```
     
