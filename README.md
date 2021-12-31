@@ -62,13 +62,7 @@ $input = [
     ],
 ];
 
-$factory = new ElementCollectionFactory();
-
-$manager = new XmlSerializerManager(
-    new XmlSerializer($factory),
-    $factory,
-    new CollectionInspector()
-);
+$manager = new XmlSerializerManager(new XmlSerializer(), new CollectionInspector());
 
 echo $manager->getXmlFromArray($input);
 ```
@@ -102,8 +96,7 @@ $inputXml = '
         </data>
     </vehicle>';
 
-$factory = new ElementCollectionFactory();
-$serializer = new XmlSerializer($factory);
+$serializer = new XmlSerializer();
 
 $collection = $serializer->deserialize($inputXml);
 
@@ -190,7 +183,7 @@ $xmlCollection = new ElementCollection();
 $rootElement = (new Element('main'))->setElements($collection);
 $xmlCollection->addElement($rootElement);
 
-$serializer = new XmlSerializer(new ElementCollectionFactory());
+$serializer = new XmlSerializer();
 
 $output = $serializer->serialize($xmlCollection);
 
@@ -226,8 +219,7 @@ $inputXml = '
         </data>
     </vehicle>';
 
-$factory = new ElementCollectionFactory();
-$serializer = new XmlSerializer($factory);
+$serializer = new XmlSerializer();
 
 $collection = $serializer->deserialize($inputXml);
 
@@ -257,8 +249,7 @@ $inputXml = '
     </notepad>
 ';
 
-$factory = new ElementCollectionFactory();
-$serializer = new XmlSerializer($factory);
+$serializer = new XmlSerializer();
 
 $collection = $serializer->deserialize($inputXml);
 
