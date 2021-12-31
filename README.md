@@ -1,4 +1,4 @@
-XmlSerializer v1.0.0
+XmlSerializer v1.0.1
 ============================
 
 This package serialize xml to collection (arrays, json) and back for your apis.
