@@ -17,9 +17,9 @@ class XmlSerializer implements XmlSerializerInterface
     protected ElementCollectionFactory $factory;
     protected array $options = [];
 
-    public function __construct(ElementCollectionFactory $factory, array $options = [])
+    public function __construct(array $options = [])
     {
-        $this->factory = $factory;
+        $this->factory = new ElementCollectionFactory();
         $this->setOptions($options);
     }
 

@@ -18,7 +18,7 @@ class XmlSerializerManagerTest extends TestCase
 
     public function testGetters(): void
     {
-        $this->assertSame($this->factory, $this->manager->getCollectionFactory());
+        $this->assertSame(true, $this->manager->getCollectionFactory() instanceof ElementCollectionFactory);
         $this->assertSame($this->serializer, $this->manager->getSerializer());
         $this->assertSame($this->collectionInspector, $this->manager->getCollectionInspector());
     }
@@ -107,9 +107,9 @@ class XmlSerializerManagerTest extends TestCase
     protected function setUp(): void
     {
         $this->factory = new ElementCollectionFactory();
-        $this->serializer = new XmlSerializer($this->factory);
+        $this->serializer = new XmlSerializer();
         $this->collectionInspector = new CollectionInspector();
-        $this->manager = new XmlSerializerManager($this->serializer, $this->factory, $this->collectionInspector);
+        $this->manager = new XmlSerializerManager($this->serializer, $this->collectionInspector);
 
         parent::setUp();
     }

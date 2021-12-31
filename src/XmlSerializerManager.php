@@ -15,11 +15,10 @@ class XmlSerializerManager
 
     public function __construct(
         XmlSerializerInterface $serializer,
-        ElementCollectionFactory $collectionFactory,
         CollectionInspectorInterface $collectionInspector,
     ) {
+        $this->collectionFactory = new ElementCollectionFactory();
         $this->serializer = $serializer;
-        $this->collectionFactory = $collectionFactory;
         $this->collectionInspector = $collectionInspector;
     }
 

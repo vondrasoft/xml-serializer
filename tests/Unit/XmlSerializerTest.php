@@ -126,7 +126,7 @@ class XmlSerializerTest extends TestCase
     protected function setUp(): void
     {
         $this->factory = new ElementCollectionFactory();
-        $this->serializer = new XmlSerializer($this->factory);
+        $this->serializer = new XmlSerializer();
 
         parent::setUp();
     }
